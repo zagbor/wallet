@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Wallet</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Main Content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <h2>Wallet</h2>
+
+            <!-- Accordion -->
+            <div class="accordion" id="accordionExample">
+
+                <!-- Add Transaction Form Section -->
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Add Transaction
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <!-- Add Transaction Form -->
+                            <form id="transactionForm">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="amount">Amount</label>
+                                    <input type="number" step="0.01" id="amount" name="amount" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="type">Type</label>
+                                    <select id="type" name="type" class="form-control" required>
+                                        <option value="INCOME">Income</option>
+                                        <option value="EXPENSE">Expense</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="categoryName">Category Name</label>
+                                    <select id="categoryName" name="categoryName" class="form-control" required>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Transaction</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Table Section -->
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                View Transactions
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <!-- Transactions Table -->
+                            <table class="table mt-4" id="transactions-table">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="'https://code.jquery.com/jquery-3.6.0.min.js'"></script>
+<script th:src="'https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js'"></script>
+<script th:src="'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'"></script>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
