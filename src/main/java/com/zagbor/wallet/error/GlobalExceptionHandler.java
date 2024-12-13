@@ -22,4 +22,10 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<List<String>> handleValidationExceptions(IllegalArgumentException ex) {
+        List<String> errors = List.of(ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
 }

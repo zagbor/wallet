@@ -1,21 +1,16 @@
 package com.zagbor.wallet.model;
 
-
-import java.math.BigDecimal;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public record Wallet(
-        Long id,
-        BigDecimal balance,
-        List<Transaction> transactions,
-        List<Category> budgetCategories
-) {
-    @Override
-    public String toString() {
-        return "Wallet{id=" + id +
-                ", balance=" + balance +
-                ", transactions=" + (transactions != null ? transactions.size() : 0) + " transactions" +
-                ", budgetCategories=" + (budgetCategories != null ? budgetCategories.size() : 0) + " categories" +
-                '}';
+
+@Data
+@AllArgsConstructor
+public class Wallet {
+    private List<Category> budgetCategories;
+
+    public Wallet() {
     }
 }
+

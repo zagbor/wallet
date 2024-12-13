@@ -1,12 +1,13 @@
 package com.zagbor.wallet.controller;
 
-import com.zagbor.wallet.TransactionDto;
-import com.zagbor.wallet.manager.TransactionManager;
+import com.zagbor.wallet.dto.TransactionDto;
+import com.zagbor.wallet.service.TransactionService;
 import com.zagbor.wallet.mapper.TransactionMapper;
 import com.zagbor.wallet.model.Transaction;
 import com.zagbor.wallet.model.TransactionType;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -25,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private final TransactionManager transactionService;
+    private final TransactionService transactionService;
     private final TransactionMapper transactionMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public boolean addTransaction(@RequestBody @Valid TransactionDto transactionDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return transactionService.addTransaction(authentication.getName(), transactionDto.name(), TransactionType.valueOf(transactionDto.type()),
-                transactionDto.amount(), transactionDto.category());
+        return transactionService.addTransaction(authentication.getName(), transactionDto.name(),
+                transactionDto.amount(), transactionDto.categoryName());
     }
 
     @GetMapping
@@ -45,7 +46,7 @@ public class TransactionController {
 
     @DeleteMapping("/{transactionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean removeTransaction(@PathVariable Long transactionId) {
+    public boolean removeTransaction(@PathVariable String transactionId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return transactionService.removeTransaction(authentication.getName(), transactionId);
     }

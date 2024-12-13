@@ -1,4 +1,4 @@
-package com.zagbor.wallet.manager;
+package com.zagbor.wallet.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Component
-public class FileManager {
+public class FileService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
     // Сохранение текста в файл
     public boolean saveTextToFile(String content, String filePath) {
@@ -96,5 +96,18 @@ public class FileManager {
     public boolean fileExists(String filePath) {
         Path path = Paths.get(filePath);
         return Files.exists(path);
+    }
+
+    public void createFile(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (file.createNewFile()) {
+                System.out.println("File created: " + filePath);
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error creating file: " + filePath, e);
+        }
     }
 }

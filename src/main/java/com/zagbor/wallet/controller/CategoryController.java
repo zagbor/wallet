@@ -1,7 +1,10 @@
 package com.zagbor.wallet.controller;
 
-import com.zagbor.wallet.model.Category;
-import com.zagbor.wallet.manager.BudgetManager;
+import com.zagbor.wallet.dto.CategoryDto;
+import com.zagbor.wallet.mapper.CategoryMapper;
+import com.zagbor.wallet.model.TransactionType;
+import com.zagbor.wallet.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -15,29 +18,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final BudgetManager budgetManager;
+    private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping
-    public List<Category> getCategories() {
+    public List<CategoryDto> getCategories() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return budgetManager.getBudgetCategories(authentication.getName());
+        return categoryService.getBudgetCategories(authentication.getName()).stream()
+                .map(categoryMapper::toDto).toList();
     }
 
-    @PostMapping("/{username}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean addCategory(@PathVariable String username, @RequestBody Category category) {
-        return budgetManager.addCategoryToBudget(username, category.name(), category.budgetLimit());
+    public boolean addCategory(@RequestBody @Valid CategoryDto category) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return categoryService.addCategoryToBudget(authentication.getName(), category.name(), category.budgetLimit(),
+                TransactionType.valueOf(category.type()));
     }
 
-    @PutMapping("/{username}/{categoryId}")
-    public boolean updateCategory(@PathVariable String username, @PathVariable String categoryName,
-                                  @RequestBody Category category) {
-        return budgetManager.updateCategory(username, categoryName, category.name(), category.budgetLimit());
+    @PutMapping("/{categoryName}")
+    public boolean updateCategory(@PathVariable String categoryName,
+                                  @RequestBody @Valid CategoryDto category) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return categoryService.updateCategory(authentication.getName(), categoryName, category.name(),
+                category.budgetLimit());
     }
 
-    @DeleteMapping("/{username}/{categoryName}")
+    @DeleteMapping("/{categoryName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable String username, @PathVariable String categoryName) {
-        budgetManager.removeCategoryFromBudget(username, categoryName);
+    public void deleteCategory(@PathVariable String categoryName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        categoryService.removeCategoryFromBudget(authentication.getName(), categoryName);
     }
 }

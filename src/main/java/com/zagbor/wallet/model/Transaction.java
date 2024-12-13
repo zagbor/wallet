@@ -1,15 +1,16 @@
 package com.zagbor.wallet.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public record Transaction(
-        Long id,
-        String name,
-        TransactionType type,
-        BigDecimal amount,
-        LocalDate date,
-        Category category,
-        Wallet wallet
-) {
+@Data
+@AllArgsConstructor
+public class Transaction {
+    private String id;
+    private String name;
+    private BigDecimal amount;
+    private LocalDateTime date;
+    private String categoryName;
 }

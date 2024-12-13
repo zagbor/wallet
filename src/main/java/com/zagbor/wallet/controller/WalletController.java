@@ -1,7 +1,7 @@
 package com.zagbor.wallet.controller;
 
 import com.zagbor.wallet.model.Wallet;
-import com.zagbor.wallet.manager.WalletManager;
+import com.zagbor.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,15 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class WalletController {
 
-    private final WalletManager walletManager;
+    private final WalletService walletService;
 
     @GetMapping("/{username}")
     public Wallet getWallet(@PathVariable String username) {
-        return walletManager.getWalletByUsername(username).orElse(null);  // или выбрасываем исключение, если не найдено
-    }
-
-    @PutMapping("/{username}")
-    public boolean updateWallet(@PathVariable String username, @RequestBody Wallet wallet) {
-        return walletManager.updateWallet(username, wallet);
+        return walletService.getWalletByUsername(username);  // или выбрасываем исключение, если не найдено
     }
 }

@@ -1,6 +1,6 @@
 package com.zagbor.wallet.controller;
 
-import com.zagbor.wallet.manager.UserManager;
+import com.zagbor.wallet.service.UserService;
 import com.zagbor.wallet.model.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,32 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserManager userManager;
+    private final UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
-        return userManager.createUser(user);
+        return userService.createUser(user);
     }
 
     @GetMapping("/{username}")
     public User getUser(@PathVariable String username) {
-        return userManager.getUserByUsername(username).orElse(null);  // или выбрасываем исключение, если не найдено
+        return userService.getUserByUsername(username);
     }
 
     @PutMapping("/{username}")
     public boolean updateUser(@PathVariable String username, @RequestBody User user) {
-        return userManager.updateUser(username, user);
-    }
-
-    @DeleteMapping("/{username}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable String username) {
-        userManager.removeUser(username);
-    }
-
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userManager.getAllUsers();
+        return userService.updateUser(username, user);
     }
 }

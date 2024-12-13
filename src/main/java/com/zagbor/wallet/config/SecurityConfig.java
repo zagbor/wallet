@@ -1,6 +1,8 @@
 package com.zagbor.wallet.config;
 
+import com.zagbor.wallet.service.UserService;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,57 +24,27 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig  {
+@AllArgsConstructor
+public class SecurityConfig {
 
-//    @Bean
-//    @Primary
-//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-//        return httpSecurity
-//                .authorizeHttpRequests(requests -> requests
-//                        .requestMatchers("/error").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .permitAll()
-//                        .defaultSuccessUrl("/", true)
-//                )
-//                .logout(logout -> logout.permitAll())
-//                .build();
-//    }
+    private UserService userService;
 
     @Bean
     @Primary
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)  // Отключение CSRF-защиты
                 .authorizeHttpRequests(requests -> requests
-                        .anyRequest().permitAll()  // Allow all requests without authentication
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")  // Custom login page
-                        .permitAll()  // Allow access to the login page for everyone
-                        .defaultSuccessUrl("/", true)  // Redirect after successful login
+                        .loginPage("/login")
+                        .permitAll()
+                        .defaultSuccessUrl("/", true)
                 )
-                .logout(logout -> logout.permitAll())  // Allow logout for everyone
-                .csrf().disable()  // Disable CSRF if it's not required (could be causing issues with POST requests)
+                .logout(logout -> logout.permitAll())
                 .build();
-    }
-
-
-    @Bean
-    public CommandLineRunner loginAutomatically() {
-        return args -> {
-            // Создаем аутентификацию с заданными данными
-            User principal = new User("josh@example.com", "pw",
-                    List.of(new SimpleGrantedAuthority("ROLE_USER")));  // Пример с ролью
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    principal, "password", principal.getAuthorities());
-
-            // Устанавливаем аутентификацию в SecurityContext
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        };
     }
 
     @Bean
@@ -85,6 +58,7 @@ public class SecurityConfig  {
                 .password(passwordEncoder.encode("pw"))
                 .roles("USER", "ADMIN")
                 .build();
+
         return new InMemoryUserDetailsManager(josh, rob);
     }
 
